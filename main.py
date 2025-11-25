@@ -606,8 +606,8 @@ class MLPredictionTab(QWidget):
                        'weather_encoded', 'restaurant_zone_encoded', 
                        'customer_zone_encoded']
 
-        X = ml_df[feature_cols]
-        y = ml_df['delivery_time_min']
+        X = ml_df[feature_cols].values
+        y = ml_df['delivery_time_min'].values
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -660,7 +660,9 @@ class MLPredictionTab(QWidget):
                 cust_zone_encoded
             ]])
 
-            prediction = self.model.predict(features)[0]
+            features_scaled = self.scaler.transform(features)
+
+            prediction = self.model.predict(features_scaled)[0]
 
             self.result_label.setText(f"Predicted Delivery Time:\n{prediction:.1f} minutes")
             self.result_label.setStyleSheet("padding: 20px; background-color: #c8e6c9; border-radius: 5px; color: #2e7d32;")
